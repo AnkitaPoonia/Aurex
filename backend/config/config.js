@@ -22,4 +22,5 @@ export const PROXY_USER = process.env.WEBSHARE_PROXY_USER  || '';
 export const PROXY_PASS = process.env.WEBSHARE_PROXY_PASS  || '';
 export const HAS_PROXY  = !!(PROXY_IP && PROXY_PORT);
 
-export const PORT = process.env.PORT || 5000;
+export const PORT         = process.env.PORT         || 5000;
+export const FRONTEND_URL = process.env.FRONTEND_URL  || 'http://localhost:5173';

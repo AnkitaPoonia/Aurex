@@ -1,7 +1,3 @@
-// ─── utils/constants.js ───────────────────────────────────────────────────────
-// Application-wide constants shared across pages and components.
-// ─────────────────────────────────────────────────────────────────────────────
-
 export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 export const TABS = [
