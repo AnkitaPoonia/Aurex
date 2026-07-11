@@ -315,7 +315,7 @@ function LandingPage() {
           <Search size={20} color="#948F7D" style={{ flexShrink: 0 }} />
           <input
             style={styles.searchInput}
-            placeholder="Enter ticker: HDFCBANK.NS, RELIANCE.NS, AAPL, TSLA..."
+            placeholder='Try "Tech Mahindra", "HDFC Bank", "Apple" or any ticker...'
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => handleKeyDown(e, query)}
@@ -333,15 +333,15 @@ function LandingPage() {
 
         <div style={{ marginTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
           {[
-            { label: 'Reliance', ticker: 'RELIANCE.NS' },
-            { label: 'Infosys', ticker: 'INFY.NS' },
-            { label: 'HDFC Bank', ticker: 'HDFCBANK.NS' },
-            { label: 'Apple', ticker: 'AAPL' },
-            { label: 'Tesla', ticker: 'TSLA' },
+            { label: 'Reliance', query: 'Reliance Industries' },
+            { label: 'Infosys', query: 'Infosys' },
+            { label: 'HDFC Bank', query: 'HDFC Bank' },
+            { label: 'Apple', query: 'Apple' },
+            { label: 'Tesla', query: 'Tesla' },
           ].map(s => (
             <button
-              key={s.ticker}
-              onClick={() => handleSearch(s.ticker)}
+              key={s.query}
+              onClick={() => handleSearch(s.query)}
               style={{
                 background: 'transparent',
                 border: '1px solid #2C2B25',

@@ -21,20 +21,24 @@ function pickBestResult(quotes) {
 
   const BLOCKED_TYPES = ['MUTUALFUND', 'ETF', 'MONEYMARKET', 'FUTURE', 'OPTION', 'CURRENCY', 'INDEX'];
 
-  const equities = quotes.filter(q =>
-    q.quoteType === 'EQUITY' &&
+  // Remove mutual funds, ETFs and other non-stock instruments
+  const allowed = quotes.filter(q =>
     !BLOCKED_TYPES.includes(q.quoteType) &&
     !q.symbol?.startsWith('0P')
   );
 
-  if (equities.length === 0) return null;
+  if (allowed.length === 0) return null;
+
+  // Prefer proper EQUITY type, but accept other stock types too
+  const equities = allowed.filter(q => q.quoteType === 'EQUITY');
+  const pool = equities.length > 0 ? equities : allowed;
 
   return (
-    equities.find(q => q.symbol?.endsWith('.NS')) ||
-    equities.find(q => q.symbol?.endsWith('.BO')) ||
-    equities.find(q => q.exchange === 'NSI') ||
-    equities.find(q => q.exchange === 'BSE') ||
-    equities[0]
+    pool.find(q => q.symbol?.endsWith('.NS')) ||
+    pool.find(q => q.symbol?.endsWith('.BO')) ||
+    pool.find(q => q.exchange === 'NSI') ||
+    pool.find(q => q.exchange === 'BSE') ||
+    pool[0]
   );
 }
 

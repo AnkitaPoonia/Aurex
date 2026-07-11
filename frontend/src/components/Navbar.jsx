@@ -66,7 +66,7 @@ function Navbar() {
             background: 'transparent', color: '#F3F1E7',
             fontSize: 14, fontFamily: "'Inter', sans-serif", padding: '3px 0',
           }}
-          placeholder="Search by ticker e.g. HDFCBANK.NS, RELIANCE.NS..."
+          placeholder='Search company name or ticker...'
           value={searchInput}
           onChange={e => setSearchInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSearch(searchInput)}
