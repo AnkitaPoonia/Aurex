@@ -228,7 +228,7 @@ export async function researchController(req, res, next) {
   try {
     const topResult = await searchCompany(query);
     if (!topResult) {
-      const error = new Error('Company not found. Try a different name or ticker symbol.');
+      const error = new Error('No stock found. Only stocks are supported — mutual funds and ETFs are not allowed. Try a stock ticker like HDFCBANK.NS or AAPL.');
       error.status = 404;
       throw error;
     }

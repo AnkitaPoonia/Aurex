@@ -19,22 +19,25 @@ async function tryFetch(url) {
 function pickBestResult(quotes) {
   if (!quotes || quotes.length === 0) return null;
 
+  const BLOCKED_TYPES = ['MUTUALFUND', 'ETF', 'MONEYMARKET', 'FUTURE', 'OPTION', 'CURRENCY', 'INDEX'];
+
   const equities = quotes.filter(q =>
     q.quoteType === 'EQUITY' &&
+    !BLOCKED_TYPES.includes(q.quoteType) &&
     !q.symbol?.startsWith('0P')
   );
+
+  if (equities.length === 0) return null;
 
   return (
     equities.find(q => q.symbol?.endsWith('.NS')) ||
     equities.find(q => q.symbol?.endsWith('.BO')) ||
     equities.find(q => q.exchange === 'NSI') ||
     equities.find(q => q.exchange === 'BSE') ||
-    equities[0] ||
-    quotes.find(q => !q.symbol?.startsWith('0P')) ||
-    quotes[0] ||
-    null
+    equities[0]
   );
 }
+
 
 export async function searchCompany(query) {
   const encodedQuery = encodeURIComponent(query);
