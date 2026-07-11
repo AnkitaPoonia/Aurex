@@ -10,23 +10,14 @@ import { fmt, pct } from '../utils/format.js';
 import { buildPrompt, buildStaticFallback } from '../constants/prompts.js';
 import { ProxyAgent, fetch } from "undici";
 
-// Proxy-enabled yf instance (used as fallback)
 const proxyAgent = new ProxyAgent(
   `http://${process.env.WEBSHARE_PROXY_USER}:${process.env.WEBSHARE_PROXY_PASS}@${process.env.WEBSHARE_PROXY_IP}:${process.env.WEBSHARE_PROXY_PORT}`
 );
 
 const proxyFetch = (url, options = {}) =>
-  fetch(url, {
-    ...options,
-    dispatcher: proxyAgent,
-  });
+  fetch(url, { ...options, dispatcher: proxyAgent });
 
-const yf = new YahooFinance({
-  suppressNotices: ["yahooSurvey"],
-  fetch: proxyFetch,
-});
-
-// Direct (no-proxy) yf instance — used first for speed/reliability
+const yf = new YahooFinance({ suppressNotices: ["yahooSurvey"], fetch: proxyFetch });
 const yfDirect = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
 
 async function getYahooPrice(ticker) {
@@ -48,27 +39,21 @@ async function getYahooPrice(ticker) {
     };
   };
 
-  // Try multiple Yahoo Finance hosts
   const hosts = ['query1.finance.yahoo.com', 'query2.finance.yahoo.com'];
   for (const host of hosts) {
     const url = `https://${host}/v8/finance/chart/${ticker}?interval=1d&range=5d`;
-    // Try direct first, then proxy
     for (const config of [{ headers: YF_HEADERS, timeout: 15000 }, getAxiosConfig({ headers: YF_HEADERS })]) {
       try {
         const res = await axios.get(url, config);
         const result = parseMeta(res.data);
-        if (result) {
-          console.log(`Returning Yahoo Price from ${host}`);
-          return result;
-        }
-      } catch (_) { /* try next */ }
+        if (result) return result;
+      } catch (_) { }
     }
   }
 
   return { currentPrice: 0, currency: 'USD', priceChange: 0, marketCap: 0, exchange: 'N/A', longName: ticker, fiftyTwoWeekHigh: 0, fiftyTwoWeekLow: 0 };
 }
 async function getYahooFundamentals(ticker) {
-  // Try direct yf first, fallback to proxy yf
   let quoteSummary;
   try {
     quoteSummary = await yfDirect.quoteSummary(ticker, {
@@ -80,7 +65,6 @@ async function getYahooFundamentals(ticker) {
     });
   }
 
-  // Helper: try direct then proxy for time series
   const fetchTimeSeries = async (module, type) => {
     try {
       return await yfDirect.fundamentalsTimeSeries(ticker, { module, type, period1: "2019-01-01" });
@@ -131,7 +115,6 @@ async function getYahooFundamentals(ticker) {
   const ks = quoteSummary?.defaultKeyStatistics || {};
   const sd = quoteSummary?.summaryDetail || {};
 
-  // Build historical revenue array (sorted oldest to newest)
   const historicalRevenue = financials
     .slice(0, 5)
     .reverse()
@@ -141,15 +124,11 @@ async function getYahooFundamentals(ticker) {
       profit: item.netIncome || 0,
     }));
 
-  // Calculate growth rates manually
   let revenueGrowth = "N/A";
-
   if (previous.totalRevenue) {
-
     revenueGrowth = pct(
       (currentRevenue - previous.totalRevenue) / previous.totalRevenue
     );
-
   }
 
   return {
@@ -235,9 +214,7 @@ async function runLangChainWithFallback(promptText) {
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (_) { }
   }
   return null;
 }
@@ -249,7 +226,6 @@ export async function researchController(req, res, next) {
   }
 
   try {
-    console.log("Searching company");
     const topResult = await searchCompany(query);
     if (!topResult) {
       const error = new Error('Company not found. Try a different name or ticker symbol.');
@@ -259,19 +235,13 @@ export async function researchController(req, res, next) {
 
     const ticker = topResult.symbol;
     const searchName = topResult.longname || topResult.shortname || ticker;
-    console.log("Resolved ticker");
 
-    // Fetch current price
     const yahooPrice = await getYahooPrice(ticker).catch(() => null);
-
-    console.log("Fetching Yahoo Fundamentals");
-
     let financials = await getYahooFundamentals(ticker);
 
     const currentPrice = financials?.price || yahooPrice?.currentPrice || 0;
     const marketCap = financials?.marketCap || yahooPrice?.marketCap || 0;
     if (!financials || financials.revenue === 0) {
-      console.log("Estimated fallback");
       financials = buildEstimatedMetrics(marketCap, currentPrice);
     }
 
@@ -295,7 +265,6 @@ export async function researchController(req, res, next) {
 
     let aiData = null;
     if (HAS_GEMINI_KEY) {
-      console.log("Running Gemini");
       aiData = await runLangChainWithFallback(prompt);
     }
 
@@ -303,7 +272,6 @@ export async function researchController(req, res, next) {
       const hasFinancials = financials.revenue > 0 && financials.source !== 'estimated';
       aiData = buildStaticFallback(companyName, HAS_GEMINI_KEY, hasFinancials);
     }
-    console.log("Completed");
 
     return res.json({
       company: {

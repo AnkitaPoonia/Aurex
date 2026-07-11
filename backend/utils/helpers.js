@@ -1,17 +1,8 @@
-// ─── utils/helpers.js ─────────────────────────────────────────────────────────
-// Reusable helper utilities: proxy agent builder, axios config factory,
-// and the estimated-metrics fallback generator.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import {
   PROXY_IP, PROXY_PORT, PROXY_USER, PROXY_PASS, HAS_PROXY, YF_TIMEOUT,
 } from '../config/config.js';
 
-/**
- * Build an HttpsProxyAgent from Webshare env vars.
- * Returns null when no proxy is configured.
- */
 export function buildProxyAgent() {
   if (!HAS_PROXY) return null;
   const auth = PROXY_USER && PROXY_PASS ? `${PROXY_USER}:${PROXY_PASS}@` : '';
@@ -19,29 +10,16 @@ export function buildProxyAgent() {
   return new HttpsProxyAgent(url);
 }
 
-/**
- * Build an axios config object that:
- *   - Sets a default timeout
- *   - Injects the proxy agent when configured
- * @param {object} extra  Any additional axios config to merge
- */
 export function getAxiosConfig(extra = {}) {
   const cfg   = { timeout: YF_TIMEOUT, ...extra };
   const agent = buildProxyAgent();
   if (agent) {
     cfg.httpsAgent = agent;
-    cfg.proxy = false; // let httpsAgent handle routing
+    cfg.proxy = false;
   }
   return cfg;
 }
 
-/**
- * fail to return real revenue data.  Metrics are proportional to market cap.
- *
- * @param {number} marketCap    Company market capitalisation
- * @param {number} currentPrice Current share price
- * @returns {object}            Estimated metrics object (source: 'estimated')
- */
 export function buildEstimatedMetrics(marketCap, currentPrice) {
   const baseVal           = marketCap > 0 ? marketCap : 50_000_000_000;
   const revenue           = baseVal * 0.25;
