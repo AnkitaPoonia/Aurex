@@ -73,7 +73,17 @@ Return ONLY valid raw JSON starting with { and ending with }. No markdown, no co
 ────────────────────────────────────────
 DECISION FRAMEWORK — DO NOT SKIP THIS STEP
 ────────────────────────────────────────
-Use balanced judgment. A company with strong revenue, solid profitability, manageable debt, and positive cash flow should generally qualify for INVEST even if one or two metrics are slightly below ideal. SKIP should only be given when multiple significant problems exist simultaneously. WATCH is the natural landing spot for mixed signals.
+Never give INVEST only because revenue and profit are positive.
+
+A company can still be WATCH or SKIP if:
+
+- PE is excessively expensive.
+- Margins are deteriorating.
+- Cashflow is weak.
+- Debt is increasing.
+- Growth is slowing.
+- Industry outlook is weak.
+- Valuation already prices in future growth.
 
 Before writing any output, internally score the company using this weighted Investment Score model (0-100). Do not reveal your internal step-by-step math — only report the final results in "decision_engine" below.
 
@@ -104,23 +114,24 @@ Sum weighted contributions into a single Investment Score out of 100.
 VERDICT BANDS — USE EXACTLY THESE RULES
 ────────────────────────────────────────
 
-🟢 INVEST — Score 65-100
-Company should satisfy MOST of these (not all — use judgment):
-- Revenue Growth: Positive (preferably >5%)
-- Net Income: Positive
-- Operating Cash Flow: Positive or near-positive
-- ROE: >12%
-- ROCE: >12%
-- Profit Margins: Reasonable or improving
-- Debt/Equity: <1.5 (or industry-appropriate)
+🟢 INVEST — Score 75-100
+Company should satisfy MOST of these:
+- Revenue Growth: Positive (preferably >10%)
+- Net Income: Positive and growing
+- Operating Cash Flow: Positive
+- ROE: >15%
+- ROCE: >15%
+- Profit Margins: Healthy or improving
+- Debt/Equity: <1 (industry adjusted)
 - Current Ratio: >1
-- PE: Not grossly overvalued relative to peers
-- Business Outlook: Stable or Positive
-- No major red flags across multiple categories
+- PE: Fair or undervalued relative to peers
+- Business Outlook: Positive
+- No major red flags
+- Industry Outlook: Stable or growing
 
-🟡 WATCH — Score 40-64
+🟡 WATCH — Score 45-74
 Company has mixed signals. Examples:
-- Good business but slightly expensive valuation.
+- Good business but expensive valuation.
 - Good revenue but weak cash flow.
 - High debt but improving earnings.
 - Good margins but slowing growth.
@@ -128,23 +139,26 @@ Company has mixed signals. Examples:
 - Strong company but current market uncertainty.
 WATCH is the DEFAULT verdict whenever financial signals are mixed or important metrics are missing/incomplete.
 
-🔴 SKIP — Score 0-39
-Multiple of these are present simultaneously:
-- Revenue clearly declining
-- Consistent net losses
-- Persistently negative operating cash flow
-- Very high debt with no improving trend
-- Very poor liquidity
-- Severely weak margins with no recovery
-- Overvalued with very weak fundamentals
-- Multiple simultaneous financial red flags
+🔴 SKIP — Score 0-44
+One or more of these:
+- Revenue declining
+- Net losses
+- Negative operating cash flow
+- ROE <8%
+- Very high debt
+- Poor liquidity
+- Weak margins
+- Overvalued with weak fundamentals
+- Weak industry outlook
+- Multiple financial red flags
 - Significant governance or business risks
 
-SCORING DISCIPLINE:
-- WATCH is the default when financial signals are clearly mixed or key metrics are missing.
-- INVEST should be given when the company shows generally healthy fundamentals — solid profitability, manageable debt, positive cash flow, and a reasonable valuation. A few mixed signals are acceptable if the overall picture is positive.
-- SKIP should only be returned when multiple significant financial weaknesses exist simultaneously — not for just one weak metric.
-- Do NOT force an INVEST verdict simply because revenue and profit are positive — valuation, cash flow, and debt trend must also broadly support it.
+STRICT SCORING DISCIPLINE:
+- Never default to INVEST.
+- WATCH is the default whenever financial signals are mixed or important metrics are missing.
+- INVEST should be given ONLY when the company demonstrates strong fundamentals, healthy profitability, sustainable growth, manageable debt, positive cash flow, reasonable valuation, and a favorable business outlook.
+- SKIP should be returned whenever multiple financial weaknesses or significant risks outweigh the positives.
+- Do NOT force an INVEST verdict simply because revenue and profit are positive — valuation, cash flow, debt trend, and industry outlook must also support it.
 - Never invent a number that was not supplied in the data above. If a required metric is missing or "N/A" upstream, write "Not Available" in that field and reduce your confidence accordingly — never hallucinate a plausible-looking figure.
 - Every qualitative statement must trace back to a specific metric from the data above (name the metric and its value).
 - Use business knowledge to interpret the numbers. Do not merely repeat the metrics — explain WHY the metric is good or bad.
