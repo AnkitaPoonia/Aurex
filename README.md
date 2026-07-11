@@ -1,6 +1,6 @@
-# FinChatBot
+# Aurex (FinChatBot)
 
-AI Investment Research Agent that provides in-depth financial analysis using data from Yahoo Finance, analyzed with LangChain and Google Gemini.
+Stocks analysis AI based project that provides in-depth financial analysis using data from Yahoo Finance, analyzed with LangChain and Google Gemini.
 
 ## Project Structure
 
