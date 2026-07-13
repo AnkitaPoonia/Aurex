@@ -8,7 +8,7 @@ function Footer() {
       color: '#4A4740',
       fontSize: 12,
     }}>
-      Data: Yahoo Finance &nbsp;·&nbsp; AI: Google Gemini &nbsp;·&nbsp; Aurex © 2024
+      Data: Yahoo Finance &nbsp;·&nbsp; AI: Google Gemini &nbsp;·&nbsp; Aurex © 2026
     </footer>
   );
 }

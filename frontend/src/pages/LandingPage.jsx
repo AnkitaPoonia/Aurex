@@ -513,7 +513,7 @@ function LandingPage() {
           <div style={{ ...styles.logoMark, width: 22, height: 22, fontSize: 11, borderRadius: 6 }}>A</div>
           <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 600, color: '#F3F1E7' }}>Aurex</span>
         </div>
-        <p>Data: Yahoo Finance &nbsp;·&nbsp; AI: Google Gemini &nbsp;·&nbsp; Aurex © 2024</p>
+        <p>Data: Yahoo Finance &nbsp;·&nbsp; AI: Google Gemini &nbsp;·&nbsp; Aurex © 2026</p>
       </footer>
     </div>
   )
